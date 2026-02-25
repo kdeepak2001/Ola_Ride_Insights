@@ -6,7 +6,7 @@ st.set_page_config(page_title="Ola Ride Insights", layout="wide")
 # Load CSV Data
 @st.cache_data
 def load_data():
-    return pd.read_csv("../Data/OLA_cleaned.csv")
+   return pd.read_csv("Data/OLA_cleaned.csv")
 
 df = load_data()
 
@@ -21,7 +21,7 @@ page = st.sidebar.selectbox(
 # ===============================
 if page == "Insights Dashboard":
 
-    st.title("🚗 Ola Ride Insights Dashboard")
+    st.title(" Ola Ride Insights Dashboard")
 
     total_rides = len(df)
     successful_rides = len(df[df["Booking_Status"] == "Success"])
