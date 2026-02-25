@@ -1,24 +1,14 @@
 import streamlit as st
-import mysql.connector
 import pandas as pd
-import os
 
 st.set_page_config(page_title="Ola Ride Insights", layout="wide")
 
-# -------------------------------
-# DATABASE CONNECTION (SECURE)
-# -------------------------------
-def get_data(query):
-    conn = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password=os.getenv("DB_PASSWORD"),
-        database="ola_project"
-    )
-    df = pd.read_sql(query, conn)
-    conn.close()
-    return df
+# Load CSV Data
+@st.cache_data
+def load_data():
+    return pd.read_csv("../Data/OLA_cleaned.csv")
 
+df = load_data()
 
 # Sidebar Navigation
 page = st.sidebar.selectbox(
@@ -31,62 +21,52 @@ page = st.sidebar.selectbox(
 # ===============================
 if page == "Insights Dashboard":
 
-    st.title(" Ola Ride Insights Dashboard")
+    st.title("🚗 Ola Ride Insights Dashboard")
 
-    # KPIs
-    total_rides = get_data("SELECT COUNT(*) as total FROM ola_rides")
-    successful_rides = get_data("SELECT COUNT(*) as success FROM ola_rides WHERE Booking_Status='Success'")
-    revenue = get_data("SELECT SUM(Booking_Value) as revenue FROM ola_rides WHERE Booking_Status='Success'")
-    driver_cancel = get_data("SELECT COUNT(*) as d FROM ola_rides WHERE Canceled_Rides_by_Driver IS NOT NULL")
-    customer_cancel = get_data("SELECT COUNT(*) as c FROM ola_rides WHERE Canceled_Rides_by_Customer IS NOT NULL")
-
-    success_rate = round((successful_rides['success'][0] / total_rides['total'][0]) * 100, 2)
+    total_rides = len(df)
+    successful_rides = len(df[df["Booking_Status"] == "Success"])
+    revenue = df[df["Booking_Status"] == "Success"]["Booking_Value"].sum()
+    driver_cancel = df["Canceled_Rides_by_Driver"].notna().sum()
+    customer_cancel = df["Canceled_Rides_by_Customer"].notna().sum()
+    success_rate = round((successful_rides / total_rides) * 100, 2)
 
     col1, col2, col3 = st.columns(3)
-    col1.metric("Total Rides", int(total_rides['total'][0]))
-    col2.metric("Successful Rides", int(successful_rides['success'][0]))
+    col1.metric("Total Rides", total_rides)
+    col2.metric("Successful Rides", successful_rides)
     col3.metric("Success Rate %", f"{success_rate}%")
 
     col4, col5 = st.columns(2)
-    col4.metric("Driver Cancellations", int(driver_cancel['d'][0]))
-    col5.metric("Customer Cancellations", int(customer_cancel['c'][0]))
+    col4.metric("Driver Cancellations", driver_cancel)
+    col5.metric("Customer Cancellations", customer_cancel)
 
     st.divider()
 
-    # Revenue Trend
     st.subheader("Revenue Trend Over Time")
-    revenue_trend = get_data("""
-        SELECT Date, SUM(Booking_Value) as revenue
-        FROM ola_rides
-        WHERE Booking_Status='Success'
-        GROUP BY Date
-        ORDER BY Date
-    """)
-    st.line_chart(revenue_trend.set_index("Date"))
+    revenue_trend = (
+        df[df["Booking_Status"] == "Success"]
+        .groupby("Date")["Booking_Value"]
+        .sum()
+    )
+    st.line_chart(revenue_trend)
 
-    # Vehicle Distribution
     st.subheader("Ride Volume by Vehicle Type")
-    vehicle_data = get_data("""
-        SELECT Vehicle_Type, COUNT(*) as count
-        FROM ola_rides
-        GROUP BY Vehicle_Type
-    """)
-    st.bar_chart(vehicle_data.set_index("Vehicle_Type"))
+    vehicle_data = df["Vehicle_Type"].value_counts()
+    st.bar_chart(vehicle_data)
 
-    # Payment Revenue
     st.subheader("Revenue by Payment Method")
-    payment_data = get_data("""
-        SELECT Payment_Method, SUM(Booking_Value) as revenue
-        FROM ola_rides
-        WHERE Booking_Status='Success'
-        GROUP BY Payment_Method
-    """)
-    st.bar_chart(payment_data.set_index("Payment_Method"))# ===============================
+    payment_data = (
+        df[df["Booking_Status"] == "Success"]
+        .groupby("Payment_Method")["Booking_Value"]
+        .sum()
+    )
+    st.bar_chart(payment_data)
+
+# ===============================
 # PAGE 2: PROJECT OUTCOME
 # ===============================
 if page == "Project Outcome & Explanation":
 
-    st.title(" Project Explanation & Business Outcome")
+    st.title("📘 Project Explanation & Business Outcome")
 
     st.subheader("Domain Introduction")
     st.write("Ride-sharing & Mobility Analytics focuses on analyzing transportation data to improve operational efficiency and customer satisfaction.")
