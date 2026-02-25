@@ -66,27 +66,54 @@ if page == "Insights Dashboard":
 # ===============================
 if page == "Project Outcome & Explanation":
 
-    st.title("📘 Project Explanation & Business Outcome")
+    st.title(" Executive Project Outcome Report")
 
-    st.subheader("Domain Introduction")
-    st.write("Ride-sharing & Mobility Analytics focuses on analyzing transportation data to improve operational efficiency and customer satisfaction.")
-
-    st.subheader("Project Introduction")
-    st.write("This project analyzes Ola ride data using SQL, Power BI, and Streamlit to derive actionable business insights.")
-
-    st.subheader("Objective")
-    st.write("The objective is to understand ride trends, cancellations, revenue, and ratings to improve service quality and profitability.")
-
-    st.subheader("EDA Findings")
+    st.markdown("## Domain Overview")
     st.write("""
-    - 62% ride success rate.
-    - Driver cancellations significantly higher than customer cancellations.
-    - Revenue heavily dependent on successful bookings.
+    The ride-sharing and mobility analytics domain focuses on optimizing transportation services 
+    through data-driven decision-making. Companies like Ola rely on operational data to enhance 
+    efficiency, reduce cancellations, and maximize revenue while maintaining customer satisfaction.
     """)
 
-    st.subheader("Business Suggestions")
+    st.markdown("## Project Objective")
     st.write("""
-    - Reduce driver cancellations through incentive mechanisms.
-    - Promote digital payments for operational efficiency.
-    - Introduce loyalty programs to increase repeat bookings.
+    The primary objective of this project was to analyze Ola ride data to uncover operational inefficiencies, 
+    revenue patterns, cancellation trends, and service quality indicators. The goal is to provide actionable 
+    business recommendations backed by analytical insights.
+    """)
+
+    st.markdown("## Key Analytical Findings")
+
+    st.markdown("""
+    - **Ride Success Rate:** 62% of total bookings were successfully completed.
+    - **Operational Risk Area:** Driver cancellations (18K+) are significantly higher than customer cancellations (10K+).
+    - **Revenue Insight:** ₹35M+ revenue generated from successful rides.
+    - **Digital Adoption:** UPI and digital payment methods contribute major revenue share.
+    - **Service Quality:** Average ratings remain stable (~4.0), indicating consistent customer satisfaction.
+    """)
+
+    st.markdown("## Business Impact")
+
+    st.markdown("""
+    - Reducing driver cancellations by even 10% can significantly increase revenue.
+    - Promoting digital payments can streamline operations and reduce cash handling risk.
+    - Loyalty programs can improve repeat ride frequency and retention.
+    """)
+
+    st.markdown("## Strategic Recommendations")
+
+    st.markdown("""
+    1. Implement performance-based incentives for drivers to reduce cancellations.
+    2. Launch targeted UPI cashback campaigns to boost digital transactions.
+    3. Introduce driver accountability metrics to improve reliability.
+    4. Monitor cancellation patterns using real-time dashboards for faster intervention.
+    """)
+
+    st.markdown("---")
+    st.markdown("### Final Conclusion")
+    st.write("""
+    This project demonstrates how structured SQL analysis, Power BI visualization, 
+    and Streamlit deployment can transform raw ride data into meaningful strategic insights. 
+    The solution provides a scalable framework for operational monitoring and revenue optimization 
+    within the ride-sharing ecosystem.
     """)
